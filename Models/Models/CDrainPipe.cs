@@ -1,0 +1,101 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Models.Models
+{
+    public partial class CDrainPipe
+    {
+        public int Id { get; set; }
+        public string? DraiPipe { get; set; }
+        public string? SysId { get; set; }
+        public string? DraiPipe1 { get; set; }
+        public long? DraiPip1 { get; set; }
+        public long? DraiPip2 { get; set; }
+        public long? Presstype { get; set; }
+        public string? DraiPip3 { get; set; }
+        public string? DraiPip4 { get; set; }
+        public long? DraiPip5 { get; set; }
+        public long? DraiPip6 { get; set; }
+        public long? DraiPip7 { get; set; }
+        public double? DraiPip8 { get; set; }
+        public long? DraiPip9 { get; set; }
+        public double? DraiPi10 { get; set; }
+        public double? DraiPi11 { get; set; }
+        public double? DraiPi12 { get; set; }
+        public double? DraiPi13 { get; set; }
+        public string? BManhole { get; set; }
+        public string? EManhole { get; set; }
+        public long? DraiPi14 { get; set; }
+        public long? DraiPi15 { get; set; }
+        public string? DraiPi16 { get; set; }
+        public string? DraiPi17 { get; set; }
+        public string? DraiPi18 { get; set; }
+        public long? Buriesmeth { get; set; }
+        public long? Buildstate { get; set; }
+        public long? Ringroad { get; set; }
+        public string? DraiPi19 { get; set; }
+        public string? DraiPi20 { get; set; }
+        public string? Manageunit { get; set; }
+        public string? DraiPi21 { get; set; }
+        public DateTime? Finishdate { get; set; }
+        public DateTime? Rundate { get; set; }
+        public DateTime? Rebuilddat { get; set; }
+        public string? Mapsheetid { get; set; }
+        public long? Isuse { get; set; }
+        public string? InCom { get; set; }
+        public DateTime? InDate { get; set; }
+        public string? InUse { get; set; }
+        public long? Versionid { get; set; }
+        public string? Remark { get; set; }
+        public string? NetShape { get; set; }
+        public string? NetType { get; set; }
+        public double? DraiDepth { get; set; }
+        public double? DraiDep1 { get; set; }
+        public double? Keyid { get; set; }
+        public long? Xiulifangf { get; set; }
+        public long? Gongnengga { get; set; }
+        public long? Jiekouxing { get; set; }
+        public double? Podu { get; set; }
+        public long? District { get; set; }
+        public long? Townowned { get; set; }
+        public long? Theirsyste { get; set; }
+        public string? Yhbm { get; set; }
+        public string? Jianshedan { get; set; }
+        public string? Obid { get; set; }
+        public string? Oeid { get; set; }
+        public DateTime? Builddate { get; set; }
+        public long? Buildyear { get; set; }
+        public string? Xtbm { get; set; }
+        public string? Sjly { get; set; }
+        public string? BManhole1 { get; set; }
+        public string? EManhole1 { get; set; }
+        public string? Gcfl { get; set; }
+        public long? Sx { get; set; }
+        public string? Biaoduan { get; set; }
+        public double? Guandaocux { get; set; }
+        public string? Shujuxingz { get; set; }
+        public string? Bx { get; set; }
+        public string? Ex { get; set; }
+        public string? Bbxx { get; set; }
+        public string? Eexx { get; set; }
+        public string? Shifouchon { get; set; }
+        public string? Shifouquxi { get; set; }
+        public string? Liuzhiliux { get; set; }
+        public string? Shifouyiji { get; set; }
+        public string? Shifouxian { get; set; }
+        public string? Psgsgl { get; set; }
+        public string? By { get; set; }
+        public string? Ey { get; set; }
+        public long? Bianhao { get; set; }
+        public string? BJbh { get; set; }
+        public string? EJbh { get; set; }
+        public string? GId { get; set; }
+        public double? Changdu { get; set; }
+        public string? Str { get; set; }
+        public string? Guandaoqin { get; set; }
+        public string? Shifoshuan { get; set; }
+        public int? Enabled { get; set; }
+        public long? Main { get; set; }
+        public float? ShapeLen { get; set; }
+    }
+}

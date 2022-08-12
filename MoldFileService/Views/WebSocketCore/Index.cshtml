@@ -1,0 +1,269 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<br>
+<br>
+<br>
+<br>
+<br>
+<link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+<h2>WebSocket上传下载</h2>
+<form class="layui-form layui-form-pane1" style="padding-top:10px">
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <label>用户名：</label> <input class="layui-input" id="userName" value="测试账号1">
+        </div>
+        <div class="layui-btn-container layui-inline">
+            <input type="file" name="file" class=" layui-btn layui-btn-normal" style="display:inline" id="file">选择文件
+            <button class="layui-btn layui-inline" type="button" id="UploadFile">上传文件</button>
+
+            <button class="layui-btn layui-inline" type="button" id="soUpload">上传文件222</button>
+        </div>
+    </div>
+    <div id="view">
+        <ul></ul>
+    </div>
+
+    <div class="layui-form">
+        <table class="layui-table" id="FileTable">
+            <thead>
+                <tr>
+                    <td>文件ID</td>
+                    <td>文件名</td>
+                    <td>上传人</td>
+                    <td>最后修改时间</td>
+                    <td>下载次数</td>
+                    <td>文件类型</td>
+                    <td>操作</td>
+                </tr>
+                <tr>
+                    <td>999</td>
+                    <td>测试用数据</td>
+                    <td>OrzCoCo</td>
+                    <td>时间戳1636709287</td>
+                    <td>55</td>
+                    <td>text/plan</td>
+                    <td onclick="downLoadFileTd('0-测试用.txt');">下载拼接用</td>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <p id="msg"></p>
+</form>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<script type="text/javascript">
+
+    // 初始化
+    var webSocketGetAll;
+    var webSocketFile;
+
+    var downloadFileName = "文件名.txt";
+
+    // 下载用连接
+    var filesUrl = "WS://localhost:27356/WebSocketCore/DownLoad";
+    // 获取用连接，即刷新
+    var useUrl = "WS://localhost:27356/WebSocketCore/GetAllFile";
+
+    $(function ()
+    {
+        //W1 每次刷新，或者重新连接进来获取文件表格
+        webSocketGetAll = new WebSocket(useUrl);
+        webSocketGetAll.onopen = function () {
+            console.log("初始化链接WebScoket创建成功");
+            // 发送初始化请求
+            webSocketGetAll.send("Init");
+        }
+        webSocketGetAll.onmessage = function (e) {
+            // 初始化成功后，填充文件表格
+            var data = e.data;
+            $("#FileTable tbody").html("");
+            $("#FileTable tbody").append(data);
+        }
+
+        // W2 新进入的请求，下载文件使用该WebSocket
+        webSocketFile = new WebSocket(filesUrl);
+        webSocketFile.onopen = function () {
+            console.log("下载WebSocket链接，初始连接成功");
+        }
+        webSocketFile.onmessage = function (e) {
+            var data = e.data;
+
+            // 利用a标签实现下载
+            if (data instanceof Blob) {
+                console.info(data);
+                const url = window.URL.createObjectURL(new Blob([data]))
+                const link = document.createElement('a')
+                link.style.display = 'none'
+                link.href = url
+                link.setAttribute('download', downloadFileName)
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+            }
+            $("#FileTable tbody").html("");
+            $("#FileTable tbody").append(data);
+        }
+
+        //$("#UploadFile").on("click", function () {
+        //    var fileController = document.getElementById("file").files;
+        //    var filetest = fileController[0];
+        //    uploadOperate(filetest);
+
+        //})
+    })
+
+    // 下载文件方法，传入参数为：  文件id-文件名
+    function downLoadFileTd(id) {
+        var index = id.indexOf('-');
+        downloadFileName = id.substring(index + 1, id.length - index + 1);
+        console.info(id);
+        if (webSocketFile) {
+            webSocketFile.send("DownLoad-" + id);
+        }
+    }
+
+    // 读取文件对象。
+    var reader = new FileReader();
+
+    // 读取文件 核心方法
+    function readBlob(file) {
+        reader.readAsArrayBuffer(file);
+    }
+
+    // 上传文件 核心方法
+    function uploadOperate(filec) {
+        if (filec) {
+            //读取文件
+            readBlob(filec);
+
+            //读取成功  发送文件
+            reader.onload = function () {
+                blob = this.result;
+                var upLoadFilesUrl = filesUrl +
+                    "?FileName=" + filec.name +
+                    "&FileSize=" + filec.size +
+                    "&LastModified=" + filec.lastModified +
+                    "&FileType=" + filec.type +
+                    "&UserName=" + $("#userName").val();
+                try{
+
+                var webSocketFileUpLoad = new WebSocket(upLoadFilesUrl);
+                }catch(exx){
+                    console.log(exx)
+                }
+
+                webSocketFileUpLoad.onopen = function () {
+                    console.log("connect 链接创建成功");
+                    webSocket = webSocketFileUpLoad;
+                    webSocketFileUpLoad.send(blob);
+                }
+
+                webSocketFileUpLoad.onmessage = function (e) {
+                    var data = e.data;
+                    if (data instanceof Blob) {
+                        console.info(data);
+                        const url = window.URL.createObjectURL(new Blob([data]))
+                        const link = document.createElement('a')
+                        link.style.display = 'none'
+                        link.href = url
+                        link.setAttribute('download', downloadFileName)
+                        debugger
+                        document.body.appendChild(link)
+                        link.click()
+                        document.body.removeChild(link)
+                    }
+                    $("#FileTable tbody").html("");
+                    $("#FileTable tbody").append(data);
+                }
+                webSocketFileUpLoad.onclose = function (ERR) {
+                    console.log("WebSocket 连接已断开。"+JSON.stringify(ERR));
+                }
+                webSocketFileUpLoad.onerror = function (ERR) {
+                    console.log("发生异常：" + JSON.stringify(ERR));
+                }
+            }
+        }
+    }
+
+    /**
+     * 
+  
+ 
+     */
+
+
+    //$("#soUpload").on("click", function () {
+    //    var fileController = document.getElementById("file").files;
+    //    var filetest = fileController[0];
+    //    let type = "";
+    //    let dom = 'msg';
+    //    socketUpload(type, filetest, dom)
+
+    //})
+
+    //function socketUpload(type, file, dom) {
+    //    let name = file.name,        //文件名
+    //        size = file.size;        //总大小
+
+    //    //socket数据针过大会导致发送断开
+    //    let shardSize = 5 * 1024 * 1024,    //以1MB为一个分片
+    //        shardCount = Math.ceil(size / shardSize);  //总片数
+
+    //    let GUID ="13131231312";
+    //    //let ws = new WebSocket('ws://localhost:27356/WebSocketCore/UpLoad');
+    //    let ws = new WebSocket('ws://localhost:27357');
+    //    let map = { code: null, type: type, name: null, chunks: null };
+    //    ws.onopen = () => {
+    //        console.log('建立文件上传通道 ...');
+    //        map.chunks = shardCount;
+    //        map.name = name;
+    //        map.code = 0;
+    //        //创建服务器存储目录
+    //        ws.send(JSON.stringify(map));
+    //    }
+
+        
+    //    ws.onmessage = (evt) => {
+    //        console.log('Received Message: ' + evt.data);
+    //        let parse = JSON.parse(evt.data);
+    //        if (parse.code == 101) {
+    //            console.log('通道已建立 ...');
+    //            for (let i = 0; i < shardCount; ++i) {
+    //                //计算每一片的起始与结束位置
+    //                let start = i * shardSize,
+    //                    end = Math.min(size, start + shardSize);
+    //                let fileBlob = file.slice(start, end);
+    //                console.log(i,shardCount,fileBlob)
+    //                ws.send(fileBlob);
+    //            }
+    //            //ws.send(file);
+    //        }
+    //        if (parse.code == 200) {
+    //            document.getElementById(dom).innerHTML = "当前上传进度为：" + parse.msg + "%";
+    //        } else if (parse.code == 202) {
+    //            document.getElementById(dom).innerHTML = "文件正在解析";
+    //        } else if (parse.code == 201) {
+    //            document.getElementById(dom).innerHTML = "解析成功，地址为：" + parse.data;
+    //            if (type === 'video') {
+    //                changeVideo(parse.data);
+    //            }
+    //        } else {
+    //            document.getElementById(dom).innerHTML = parse.data;
+    //        }
+    //        return null;
+    //    }
+    //    ws.onclose = function (e) {
+    //        console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean)
+    //        console.log(e)
+    //    }
+    //}
+
+</script>
+
+
+

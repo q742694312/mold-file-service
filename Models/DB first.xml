@@ -1,0 +1,6 @@
+
+
+<!--DB first 指令-->
+<cli>
+  Scaffold-DbContext "Data Source=192.168.2.40;Initial Catalog=BigData;Persist Security Info=True;TrustServerCertificate=yes;User ID=sa;PWD=Sgidi123456" Microsoft.EntityFrameworkCore.SqlServer -o Models -ContextDir DBContexts -f
+</cli>
